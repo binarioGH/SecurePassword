@@ -2,9 +2,9 @@
 from random import randint
 from optparse import OptionParser as opt
 from sys import argv
-from time import strftime
+from lib import *
 import codecs
-getDate = lambda: "{}-{}".format(strftime("%d-%m-%y"),strftime("%H-%M-%S"))
+
 
 def getsPass(l,bannedchars="",spaces=True):
 	if not spaces:
@@ -41,4 +41,5 @@ def main():
 
 
 if __name__ == '__main__':
+	banner()
 	main()
