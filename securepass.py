@@ -6,6 +6,33 @@ from lib import *
 from pyperclip import copy
 import codecs
 
+def testPassword(password):
+	with open("weakpasswords.txt", "r") as f:
+		weak_passwords = f.read().split()
+	if password.lower() in weak_passwords:
+		return ("A few minutes or seconds", "Very weak")
+	time = {}
+	attemps = len(password) ** 52
+	attemps = int(attemps / 103000) 
+	attemps = int(attemps / 120)
+	time["years"] = int(attemps % 876060)
+	time["months"] = int(attemps % 730)
+	time["days"] = int(attemps % 24)
+	time["hours"] = attemps
+	biggest = max(time, key=time.get)
+	howlong = "{} {}".format(time[biggest], biggest)
+	hardness = ""
+	if biggest == "hours":
+		hardness = "weak"
+	elif biggest == "days":
+		hardness = "not that weak, but still weak"
+	elif biggest == "months":
+		hardness = "a bit strong"
+	elif biggest == "years":
+		hardness = "strong"
+	elif time[biggest] == 100:
+		hardness = "Jojo's bizarre adventure, your password is unbreakable"
+	return (howlong, hardness)
 
 def getsPass(l,bannedchars="",spaces=True):
 	if not spaces:
@@ -30,7 +57,16 @@ def main():
 	op.add_option("-p", "--donotprint", dest="print", action="store_false", default=True, help="Use this flag if you don't want to print your result.")
 	op.add_option("-c", "--copy",action="store_true", dest="copy", default=True,help="Copy in password in the clipboard.")
 	op.add_option("-x", "--dontcopy", action="store_false", dest="copy", help="Use this flag to avoid copying the password in the clipboard.")
+	op.add_option("-t", "--testPassword", action="store_true", dest="test", help="Use this flag to test how secure is a password.")
+	op.add_option("-w", "--passwordtotest", default=0,dest="passw", type="string",help="Define the password to test.")
 	(o, argv) = op.parse_args()
+	if o.test:
+		if not  o.passw:
+			print("You didn't define the password to test.")
+			exit()
+		else:
+			testresult = testPassword(o.passw)
+			print("Your password would take {} to break, it is {}".format(testresult[0], testresult[1]))	
 	spass = getsPass(o.len, bannedchars=o.bnd, spaces=o.spaces)
 	if o.print:
 		print("Your new password: {}".format(spass))
