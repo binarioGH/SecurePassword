@@ -10,29 +10,12 @@ def testPassword(password):
 	with open("weakpasswords.txt", "r") as f:
 		weak_passwords = f.read().split()
 	if password.lower() in weak_passwords:
-		return ("A few minutes or seconds", "Very weak")
-	time = {}
-	attemps = len(password) ** 52
-	attemps = int(attemps / 103000) 
-	attemps = int(attemps / 120)
-	time["years"] = int(attemps % 876060)
-	time["months"] = int(attemps % 730)
-	time["days"] = int(attemps % 24)
-	time["hours"] = attemps
-	biggest = max(time, key=time.get)
-	howlong = "{} {}".format(time[biggest], biggest)
-	hardness = ""
-	if biggest == "hours":
-		hardness = "weak"
-	elif biggest == "days":
-		hardness = "not that weak, but still weak"
-	elif biggest == "months":
-		hardness = "a bit strong"
-	elif biggest == "years":
-		hardness = "strong"
-	elif time[biggest] == 100:
-		hardness = "Jojo's bizarre adventure, your password is unbreakable"
-	return (howlong, hardness)
+		print("It would take a few minutes or seconds to break, it is very weak.")
+		return 0
+	points = 0
+	points += int(len(password)/8)
+	return points
+
 
 def getsPass(l,bannedchars="",spaces=True):
 	if not spaces:
@@ -66,7 +49,7 @@ def main():
 			exit()
 		else:
 			testresult = testPassword(o.passw)
-			print("Your password would take {} to break, it is {}".format(testresult[0], testresult[1]))	
+			print("You got {} points.".format(testresult))
 	spass = getsPass(o.len, bannedchars=o.bnd, spaces=o.spaces)
 	if o.print:
 		print("Your new password: {}".format(spass))
